@@ -1,5 +1,6 @@
-describe('template spec', () => {
-  it('passes', () => {
-    cy.visit('https://example.cypress.io')
+describe('Phonebook', function() {
+  it('frontpage can be seen', function() {
+    cy.visit('http://localhost:3001')
+    cy.contains('Numbers')
   })
 })
