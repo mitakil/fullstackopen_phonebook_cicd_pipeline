@@ -52,7 +52,12 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
           severity: info
-          details: All tests passed, ready for deployment.
+          details: |
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
+            All tests passed, ready for deployment.
+
 
       - name: Notification of failure
         uses: rjstone/discord-webhook-notify@v2.2.1
