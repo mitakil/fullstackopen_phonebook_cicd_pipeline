@@ -67,6 +67,15 @@ jobs:
         if: ${{ failure() }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          text: Notification from Github Actions
           severity: error
-          details: Problems in workflow!!
+          title: Deployment successful!
+          description: |
+            This notification of failure. Something went wrong on workflow.
+
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
+
+            **Error**: ${{ steps.get_error.outputs.error_message }}
 
