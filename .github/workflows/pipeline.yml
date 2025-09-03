@@ -61,27 +61,63 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
           text: Notification from Github Actions
           severity: error
-          title: Deployment failure!
+          title: Install or build failure!
           description: |
-            This notification of failure. Something went wrong on pull request checks.
+            This notification of failure. Something went wrong on pull request install or build.
 
             **Repository**: ${{ github.repository }}
             **Commit**: ${{ github.sha }}
             **Actor**: ${{ github.actor }}
 
-  deploy_on_merge:
+  run_e2e_tests:
+    needs: [pr_checks]
     if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Trigger deployment
-        if: github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip')
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_KEY }}
-  
+      - name: e2e tests
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run test:e2e:ci
+          start: npm run start
+          wait-on: http://localhost:3001
+
+      - name: Notification of failure
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          text: Notification from Github Actions
+          severity: error
+          title: Install or build failure!
+          description: |
+            This notification of failure. Something went wrong on pull request install or build.
+
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
+
+  # deploy_on_merge:
+  #   if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+
+  #     - name: Trigger deployment
+  #       if: github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip')
+  #       run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_KEY }}
+
+      
   
   discord_notification_success:
     needs: [pr_checks]
