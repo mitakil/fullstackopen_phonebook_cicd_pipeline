@@ -55,8 +55,9 @@ jobs:
         # uses: cypress-io/github-action@v5
         run: |
           cd backend
-          echo pws
+          run echo pws
           npm run start
+          sleep 5
           npm run test:e2e:ci
         # with:
         #   command: npm run test:e2e:ci
