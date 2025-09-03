@@ -41,6 +41,9 @@ jobs:
         working-directory: './backend'
         run: npm run build:ui
 
+      - name: cd to backend for e2e testing
+        run: cd backend
+
       - name: echo pwd
         run: pwd
 
