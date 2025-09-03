@@ -34,9 +34,6 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Start server
-        run: npm run server
-
       - name: Run Cypress test
         if: ${{ !contains(github.event.head_commit.message, '#skip') }}
         uses: cypress-io/github-action@v5
