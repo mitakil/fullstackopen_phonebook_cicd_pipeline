@@ -4,13 +4,9 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist','cypress/*','cypress.config.js'] },
   {
     files: ['**/*.{js,jsx}'],
-    ignore: [
-      'cypress/*',
-      'cypress.config.js'
-    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
