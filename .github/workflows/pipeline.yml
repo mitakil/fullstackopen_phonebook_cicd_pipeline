@@ -42,6 +42,23 @@ jobs:
           start: npx vite --host
           wait-on: http://localhost:5173
 
+      - name: Notification of failure
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          text: Notification from Github Actions
+          severity: error
+          title: Deployment successful!
+          description: |
+            This notification of failure. Something went wrong on workflow.
+
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
+
+            **Error**: ${{ steps.get_error.outputs.error_message }}
+
   discord_notification_success:
     needs: [pr_checks]
     runs-on: ubuntu-latest
@@ -61,27 +78,6 @@ jobs:
             **Commit**: ${{ github.sha }}
             **Actor**: ${{ github.actor }}
 
-      - name: Notification of failure
-        uses: rjstone/discord-webhook-notify@v2.2.1
-        if: ${{ failure() }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
-          text: Notification from Github Actions
-          severity: error
-          title: Deployment successful!
-          description: |
-            This notification of failure. Something went wrong on workflow.
-
-            **Repository**: ${{ github.repository }}
-            **Commit**: ${{ github.sha }}
-            **Actor**: ${{ github.actor }}
-
-            **Error**: ${{ steps.get_error.outputs.error_message }}
-
-
-  discord_notification_error:
-    runs-on: ubuntu-latest
-    steps:
       - name: Notification of failure
         uses: rjstone/discord-webhook-notify@v2.2.1
         if: ${{ failure() }}
