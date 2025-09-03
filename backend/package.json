@@ -9,12 +9,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:e2e:ci": "cypress run",
+    "test:e2e": "cypress open"
   },
   "author": "Miika Takila",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "cypress": "^15.1.0",
     "dos2unix": "^1.1.2",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
