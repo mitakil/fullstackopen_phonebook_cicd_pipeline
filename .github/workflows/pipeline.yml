@@ -55,8 +55,8 @@ jobs:
         # uses: cypress-io/github-action@v5
         run: |
           cd backend
+          echo pws
           npm run start
-          npx wait-on http://localhost:3001
           npm run test:e2e:ci
         # with:
         #   command: npm run test:e2e:ci
