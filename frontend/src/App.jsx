@@ -18,8 +18,6 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState(null)
 
-  const unused_var = ''
-
 
   //getAll from persons.js service to get all persons in the list
   useEffect(() => {
@@ -28,7 +26,7 @@ const App = () => {
       })
   }, [])
 
-  // Add name and number IF person is not found through persons.js serice "add"
+  // Add name and number IF person is not found through persons.js service "add"
   const addNameNumber = (event) => {
     event.preventDefault()
     const nameObject = { name: newName, number: newNumber }
@@ -48,7 +46,7 @@ const App = () => {
             ))
             setNewName('')
             setNewNumber('')
-            setNotification(`Person ${nameObject.name} number modified`)
+            setNotification({message: `Person ${nameObject.name} number modified`, type: 'success'})
               setTimeout(() => {
                 setNotification(null)
               }, 5000)
@@ -57,7 +55,7 @@ const App = () => {
             setNotification({message: `The person ${personFound.name} was already removed from server. Error: ${error}`, type: 'error'})
             setTimeout(() => {
               setNotification(null)
-            }, 5000)  
+            }, 5000)
             setPersons(persons.filter(p => p.id !== personFound.id))
           }) 
       }
@@ -70,12 +68,19 @@ const App = () => {
         setPersons(persons.concat(response))
         setNewName('')
         setNewNumber('')
-      })
         setNotification({ message: `Person ${nameObject.name} added to phonebook`, type: 'success' })
         setTimeout(() => {
           setNotification(null)
         }, 5000)
-      
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        console.log(error.response)
+        setNotification({ message: `Error ${error.response.status}. ${error.response.data.error}`, type: 'error' })
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
   }
 
   const filteredPersons = persons.filter(person => 

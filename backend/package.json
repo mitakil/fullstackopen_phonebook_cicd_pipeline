@@ -1,0 +1,31 @@
+{
+  "name": "phonebookbackend",
+  "version": "1.0.0",
+  "description": "part3 phonebook with focus on backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rd /s dist && cd ../frontend && npm run build && xcopy /s /e dist ../backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "lint": "eslint ."
+  },
+  "author": "Miika Takila",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dos2unix": "^1.1.2",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@stylistic/eslint-plugin-js": "^4.2.0",
+    "eslint": "^9.25.0",
+    "globals": "^16.0.0"
+  }
+}
