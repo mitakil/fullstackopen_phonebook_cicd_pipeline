@@ -18,7 +18,7 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState(null)
 
-  const unused_var = ''
+  
 
 
   //getAll from persons.js service to get all persons in the list

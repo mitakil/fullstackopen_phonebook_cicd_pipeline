@@ -47,3 +47,23 @@ jobs:
           start: npm run prod
           wait-on: http://localhost:5173
 
+  discord_notification:
+    needs: [pr_checks]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notification of success
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+        with:
+          args: 'Notification of success'
+
+      - name: Notification of failure
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+        with:
+          args: 'Tag release failed, commit ${{ github.sha }}'
+
