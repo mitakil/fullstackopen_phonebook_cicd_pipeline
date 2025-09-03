@@ -47,18 +47,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notification of success
-        if: ${{ success() }}
         uses: rjstone/discord-webhook-notify@v2.2.1
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+        if: ${{ success() }}
         with:
-          args: 'Notification of success'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          severity: info
+          details: All tests passed!
 
       - name: Notification of failure
-        if: ${{ failure() }}
         uses: rjstone/discord-webhook-notify@v2.2.1
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+        if: ${{ failure() }}
         with:
-          args: 'Tag release failed, commit ${{ github.sha }}'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          severity: error
+          details: Problems in workflow!!
 
