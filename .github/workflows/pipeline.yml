@@ -51,12 +51,14 @@ jobs:
         if: ${{ success() }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
-          severity: info
-          details: |
-            **Repository**: ${{ github.repository }}
-            **Commit**: ${{ github.sha }}
-            **Actor**: ${{ github.actor }}
-            All tests passed, ready for deployment.
+          username: Custom Bot Username
+          text: Below this normal-looking message is an embed!
+          severity: info # only to make sure the embed is added
+          color: '#ff00aa'
+          title: My Fancy Embed Title
+          description: "This is a ***SuPeR custom*** description. I hope it looks good."
+          # details: not needed because we overrode default description.
+          footer: This embed was brought to you by the letter R and the number 4.
 
 
       - name: Notification of failure
