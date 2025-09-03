@@ -25,8 +25,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install dependencies backend
         working-directory: './backend'
+        run: npm install
+
+      - name: Install dependencies frontend
+        working-directory: './frontend'
         run: npm install
 
       - name: Check style
