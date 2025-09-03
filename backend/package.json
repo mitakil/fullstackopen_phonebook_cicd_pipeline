@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rd /s dist && cd ../frontend && npm run build && xcopy /s /e dist ../backend",
+    "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint ."
   },

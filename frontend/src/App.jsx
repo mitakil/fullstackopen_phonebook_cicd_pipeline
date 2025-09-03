@@ -113,7 +113,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>Phonebookkk</h2>
       {notification && <Notification message={notification} />}
       <Filter filter={filter} handleFilterChange={(i) => setFilter(i.target.value)} />
       <h2>Add a new</h2>
