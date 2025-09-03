@@ -126,7 +126,7 @@ jobs:
       
   
   discord_notification_success:
-    needs: [run_e2e_tests]
+    needs: [pr_checks]
     runs-on: ubuntu-latest
     steps:
       - name: Notification of success
