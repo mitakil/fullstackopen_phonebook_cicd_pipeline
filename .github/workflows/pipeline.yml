@@ -41,12 +41,6 @@ jobs:
         working-directory: './backend'
         run: npm run build:ui
 
-      # - name: cd to backend for e2e testing
-      #   run: cd backend
-
-      # - name: echo pwd
-      #   run: pwd
-
       - name: e2e tests
         if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
         env:
@@ -68,62 +62,67 @@ jobs:
           severity: error
           title: Install or build failure!
           description: |
-            This notification of failure. Something went wrong on pull request install, lint or build.
+            This notification of failure. Something went wrong on pull request install, lint, build or e2e tests.
 
             **Repository**: ${{ github.repository }}
             **Commit**: ${{ github.sha }}
             **Actor**: ${{ github.actor }}
 
-  # run_e2e_tests:
-  #   needs: [pr_checks]
-  #   if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: backend
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '20'
+  deploy_on_merge:
+    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-  #     - name: e2e tests
-  #       uses: cypress-io/github-action@v5
-  #       with:
-  #         command: npm run test:e2e:ci
-  #         start: npm run start
-  #         wait-on: http://localhost:3001
+      - name: Trigger deployment
+        if: github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip')
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_ID }}?key=${{ secrets.RENDER_KEY }}
 
-  #     - name: Notification of failure
-  #       uses: rjstone/discord-webhook-notify@v2.2.1
-  #       if: ${{ failure() }}
-  #       with:
-  #         webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
-  #         text: Notification from Github Actions
-  #         severity: error
-  #         title: Install or build failure!
-  #         description: |
-  #           This notification of failure. Something went wrong on pull request install or build.
+      - name: Notification of failure
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          text: Notification from Github Actions
+          severity: error
+          title: Install or build failure!
+          description: |
+            This notification of failure. Something went wrong on deployment to Render.
 
-  #           **Repository**: ${{ github.repository }}
-  #           **Commit**: ${{ github.sha }}
-  #           **Actor**: ${{ github.actor }}
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
 
-  # deploy_on_merge:
-  #   if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '20'
+  tag_release:
+    needs: [deploy_on_merge]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
 
-  #     - name: Trigger deployment
-  #       if: github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip')
-  #       run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_KEY }}
+      - name: Notification of failure
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+          text: Notification from Github Actions
+          severity: error
+          title: Install or build failure!
+          description: |
+            This notification of failure. Something went wrong on tag release.
 
-      
-  
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
+
   discord_notification_success:
     needs: [pr_checks]
     runs-on: ubuntu-latest
@@ -137,7 +136,7 @@ jobs:
           severity: info
           title: Deployment successful!
           description: |
-            This notification of success. Pull request was merger successfully.
+            This notification of success. Pull request was merged successfully.
 
             **Repository**: ${{ github.repository }}
             **Commit**: ${{ github.sha }}
