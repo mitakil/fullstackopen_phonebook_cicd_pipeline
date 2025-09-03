@@ -7,6 +7,10 @@ export default [
   { ignores: ['dist'] },
   {
     files: ['**/*.{js,jsx}'],
+    ignore: [
+      'cypress/*',
+      'cypress.config.js'
+    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
