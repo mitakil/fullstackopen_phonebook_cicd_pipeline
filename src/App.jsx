@@ -18,6 +18,8 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState(null)
 
+  const unused_var = ''
+
 
   //getAll from persons.js service to get all persons in the list
   useEffect(() => {
@@ -55,7 +57,7 @@ const App = () => {
             setNotification({message: `The person ${personFound.name} was already removed from server. Error: ${error}`, type: 'error'})
             setTimeout(() => {
               setNotification(null)
-            }, 5000)
+            }, 5000)  
             setPersons(persons.filter(p => p.id !== personFound.id))
           }) 
       }
