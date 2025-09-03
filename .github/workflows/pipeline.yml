@@ -54,7 +54,7 @@ jobs:
           PORT: ${{ secrets.PORT }}
         uses: cypress-io/github-action@v5
         with:
-          project: ./backend
+          working-directory: ./backend
           command: npm run test:e2e:ci
           start: npm run start
           wait-on: http://localhost:3001
