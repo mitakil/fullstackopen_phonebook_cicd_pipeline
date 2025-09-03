@@ -52,16 +52,12 @@ jobs:
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           PORT: ${{ secrets.PORT }}
-        # uses: cypress-io/github-action@v5
-        run: |
-          cd backend
-          npm run start
-          sleep 5
-          npm run test:e2e:ci
-        # with:
-        #   command: npm run test:e2e:ci
-        #   start: npm run start
-        #   wait-on: http://localhost:3001
+        uses: cypress-io/github-action@v5
+        with:
+          project: ./backend
+          command: npm run test:e2e:ci
+          start: npm run start
+          wait-on: http://localhost:3001
 
       - name: Notification of failure
         uses: rjstone/discord-webhook-notify@v2.2.1
