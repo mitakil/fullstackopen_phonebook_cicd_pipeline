@@ -41,18 +41,18 @@ jobs:
         working-directory: './backend'
         run: npm run build:ui
 
-      - name: cd to backend for e2e testing
-        run: cd backend
+      # - name: cd to backend for e2e testing
+      #   run: cd backend
 
-      - name: echo pwd
-        run: pwd
+      # - name: echo pwd
+      #   run: pwd
 
-      - name: e2e tests
-        uses: cypress-io/github-action@v5
-        with:
-          command: npm run test:e2e:ci
-          start: npm run start
-          wait-on: http://localhost:3001
+      # - name: e2e tests
+      #   uses: cypress-io/github-action@v5
+      #   with:
+      #     command: npm run test:e2e:ci
+      #     start: npm run start
+      #     wait-on: http://localhost:3001
 
       - name: Notification of failure
         uses: rjstone/discord-webhook-notify@v2.2.1
@@ -120,7 +120,7 @@ jobs:
       
   
   discord_notification_success:
-    needs: [pr_checks]
+    needs: [run_e2e_tests]
     runs-on: ubuntu-latest
     steps:
       - name: Notification of success
