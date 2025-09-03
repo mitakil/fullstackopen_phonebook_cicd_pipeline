@@ -39,7 +39,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           command: npm run cypress:run
-          start: npm run prod
+          start: npx vite --host
           wait-on: http://localhost:5173
 
   discord_notification:
