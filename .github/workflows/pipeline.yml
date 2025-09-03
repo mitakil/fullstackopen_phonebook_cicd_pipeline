@@ -47,47 +47,18 @@ jobs:
       # - name: echo pwd
       #   run: pwd
 
-      # - name: e2e tests
-      #   uses: cypress-io/github-action@v5
-      #   with:
-      #     command: npm run test:e2e:ci
-      #     start: npm run start
-      #     wait-on: http://localhost:3001
-
-      - name: Notification of failure
-        uses: rjstone/discord-webhook-notify@v2.2.1
-        if: ${{ failure() }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
-          text: Notification from Github Actions
-          severity: error
-          title: Install or build failure!
-          description: |
-            This notification of failure. Something went wrong on pull request install or build.
-
-            **Repository**: ${{ github.repository }}
-            **Commit**: ${{ github.sha }}
-            **Actor**: ${{ github.actor }}
-
-  run_e2e_tests:
-    needs: [pr_checks]
-    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: e2e tests
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
         uses: cypress-io/github-action@v5
-        with:
-          command: npm run test:e2e:ci
-          start: npm run start
-          wait-on: http://localhost:3001
+        run: |
+          cd backend
+          npm run start
+          npx wait-on http://localhost:3001
+          npm run test:e2e:ci
+        # with:
+        #   command: npm run test:e2e:ci
+        #   start: npm run start
+        #   wait-on: http://localhost:3001
 
       - name: Notification of failure
         uses: rjstone/discord-webhook-notify@v2.2.1
@@ -98,11 +69,46 @@ jobs:
           severity: error
           title: Install or build failure!
           description: |
-            This notification of failure. Something went wrong on pull request install or build.
+            This notification of failure. Something went wrong on pull request install, lint or build.
 
             **Repository**: ${{ github.repository }}
             **Commit**: ${{ github.sha }}
             **Actor**: ${{ github.actor }}
+
+  # run_e2e_tests:
+  #   needs: [pr_checks]
+  #   if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+
+  #     - name: e2e tests
+  #       uses: cypress-io/github-action@v5
+  #       with:
+  #         command: npm run test:e2e:ci
+  #         start: npm run start
+  #         wait-on: http://localhost:3001
+
+  #     - name: Notification of failure
+  #       uses: rjstone/discord-webhook-notify@v2.2.1
+  #       if: ${{ failure() }}
+  #       with:
+  #         webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
+  #         text: Notification from Github Actions
+  #         severity: error
+  #         title: Install or build failure!
+  #         description: |
+  #           This notification of failure. Something went wrong on pull request install or build.
+
+  #           **Repository**: ${{ github.repository }}
+  #           **Commit**: ${{ github.sha }}
+  #           **Actor**: ${{ github.actor }}
 
   # deploy_on_merge:
   #   if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
