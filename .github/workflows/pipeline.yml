@@ -34,8 +34,8 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Start frontend
-        run: npm run prod
+      - name: Start preview
+        run: npm run preview
 
       - name: Start server
         run: npm run server
