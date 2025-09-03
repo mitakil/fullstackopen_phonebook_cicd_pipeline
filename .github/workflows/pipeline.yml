@@ -51,14 +51,15 @@ jobs:
         if: ${{ success() }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_JDDS }}
-          username: Custom Bot Username
-          text: Below this normal-looking message is an embed!
-          severity: info # only to make sure the embed is added
-          color: '#ff00aa'
-          title: My Fancy Embed Title
-          description: "This is a ***SuPeR custom*** description. I hope it looks good."
-          # details: not needed because we overrode default description.
-          footer: This embed was brought to you by the letter R and the number 4.
+          text: Notification from Github Actions
+          severity: info
+          title: Deployment successful!
+          description: |
+            This notification of success. Pull request was merger successfully.
+
+            **Repository**: ${{ github.repository }}
+            **Commit**: ${{ github.sha }}
+            **Actor**: ${{ github.actor }}
 
 
       - name: Notification of failure
